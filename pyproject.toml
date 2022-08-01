@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "sized"
+version = "0.1.0"
+description = "Decorate Generators to be Sized and Indexable"
+authors = ["ionite34 <dev@ionite.io>"]
+
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ionite34/sized"
+
+keywords = ["generator", "iterator", "iter", "sizedgenerator"]
+
+[tool.poetry.dependencies]
+python = ">=3.9, <3.12"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+mypy = "^0.971"
+pylint = "^2.14.5"
+black = "^22.6.0"
+tox = "^3.25.1"
+pre-commit = "^2.20.0"
+
+[tool.pylint.messages_control]
+max-line-length = 88
+disable = [
+    "missing-module-docstring",
+    "unused-argument",
+    "no-value-for-parameter",
+    "no-member",
+    "no-else-return",
+    "bad-whitespace",
+    "bad-continuation",
+    "line-too-long",
+    "fixme",
+    "protected-access",
+    "too-few-public-methods",
+]
+
+[tool.pylint.design]
+max-returns = 8
+
+[build-system]
+requires = ["poetry-core>=1.0.8"]
+build-backend = "poetry.core.masonry.api"
