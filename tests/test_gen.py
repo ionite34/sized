@@ -1,5 +1,5 @@
-from typing import Generator
 from collections.abc import Sized
+from typing import Generator
 
 import pytest
 from tqdm import tqdm
@@ -54,7 +54,7 @@ def test_decorator(make_gen):
         assert v == i
 
     # Check out of range
-    with pytest.raises(IndexError):
+    with pytest.raises(StopIteration):
         next(gen)
 
     # Check throw
@@ -62,15 +62,15 @@ def test_decorator(make_gen):
         gen.throw(RuntimeError)
 
 
-def test_decorator_ex(make_gen):
+def test_decorator_ex():
     # Check invalid decorator use
     with pytest.raises(TypeError):
 
-        @sized(size=1)
-        def _make_gen():
-            return 1
+        @sized(5)
+        def _make_gen(n: int):
+            return 1 + n
 
-        _make_gen()
+        _make_gen(2)
 
 
 def test_sized_gen():
@@ -112,8 +112,3 @@ def test_fixed_gen_tqdm(capsys):
     assert counter == 128
     captured = capsys.readouterr()
     assert "128/128" in captured.err
-
-
-def test_show():
-    gen = (i for i in range(128))
-    f_gen = SizedGenerator(gen, 128)

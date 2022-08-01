@@ -1,19 +1,23 @@
 from __future__ import annotations
 
 import typing as t
-from abc import abstractmethod
-from collections.abc import Generator, Sequence
+from collections.abc import Generator
 from functools import wraps
-from typing import Union
+from types import TracebackType
+from typing import overload
 
-_T = t.TypeVar("_T")
+T_yield = t.TypeVar("T_yield")
+T_send = t.TypeVar("T_send")
+T_return = t.TypeVar("T_return")
+T_call = t.TypeVar("T_call", bound=t.Callable[..., Generator])
 
 SizeLike = t.Union[int, t.Sized]
-SizedCallable = t.Callable[[dict[t.Union[str, int]]], SizeLike]
+SizedCallable = t.Callable[[dict[t.Union[str], t.Any]], SizeLike]
 SupportsSize = t.Union[SizeLike, SizedCallable]
 
 
 def _get_size(size: SizeLike) -> int:
+    """Get an int size from int | Sized"""
     if isinstance(size, int):
         return size
     elif isinstance(size, t.Sized):
@@ -21,46 +25,72 @@ def _get_size(size: SizeLike) -> int:
     raise TypeError(f"{size} should be int or Sized, not {type(size)}")
 
 
-def _size_call(size: SizedCallable) -> int:
-    if callable(size):
-        return size(dict())
-    return size
+def _size_call(func: SizedCallable, fn_dict: dict[str, t.Any]) -> int:
+    """Get int size from SizedCallable"""
+    size_like = func(fn_dict)
+    return _get_size(size_like)
 
 
-class SizedGenerator(Generator[_T, None, None]):
-    def __init__(self, gen: Generator[_T, None, None], length: int | t.Sized):
+class SizedGenerator(Generator[T_yield, T_send, T_return]):
+    def __init__(self, gen: Generator[T_yield, T_send, T_return], size_like: SizeLike):
         """
         Generator with fixed size.
 
         Args:
             gen: Base Generator
-            length: Length of iterator as int, or Sized object that implements __len__
+            size_like: Length of iterator as int, or Sized object that implements __len__
         """
         super().__init__()
         if not isinstance(gen, Generator):
             raise TypeError(f"Expected Generator, got {type(gen)}")
         self._gen = gen
-        self._length = Size(length)
-        self._index: int = 0
-        self._data: list = []
+        self._length = _get_size(size_like)
+        self._index = 0
 
-    def send(self, *args, **kwargs):
-        if self._index > self._length.value:
-            self.throw(
-                IndexError(f"Iteration out of range: {self._index}/{self._length}")
-            )
+    def send(self, __value: T_send) -> T_yield:
+        """Send the next value or raise StopIteration."""
+        if self._index > self._length:
+            raise StopIteration
         self._index += 1
-        # Update size if
-        return self._gen.send(*args, **kwargs)
+        return self._gen.send(__value)
 
-    def throw(self, *args, **kwargs):
-        return self._gen.throw(*args, **kwargs)
+    @overload
+    def throw(
+        self,
+        __typ: t.Type[BaseException],
+        __val: object = ...,
+        __tb: TracebackType | None = ...,
+    ) -> T_yield:
+        """Raise an exception in the generator."""
+        ...
+
+    @overload
+    def throw(
+        self,
+        __typ: BaseException,
+        __val: None = ...,
+        __tb: TracebackType | None = ...,
+    ) -> T_yield:
+        """Raise an exception in the generator."""
+        ...
+
+    def throw(
+        self,
+        __typ: t.Type[BaseException] | BaseException,
+        __val: BaseException | object | None = None,
+        __tb: TracebackType | None = None,
+    ) -> T_yield:
+        """Raise an exception in the generator."""
+        return self._gen.throw(__typ, __val, __tb)  # type: ignore
 
     def __len__(self) -> int:
-        return self._length.value - self._index
+        """Return the current length of the iterator, or max - iterated."""
+        return self._length - self._index
 
 
-def sized(size: int | t.Callable[[dict[str | int]], int]):
+def sized(
+    size: SupportsSize,
+) -> t.Callable[[T_call], t.Callable[..., SizedGenerator[T_yield, T_send, T_return]]]:
     """
     Decorator to make a generator with fixed size.
 
@@ -71,7 +101,7 @@ def sized(size: int | t.Callable[[dict[str | int]], int]):
     Returns: Decorator
 
     Example:
-        Provide int length::
+        Provide int size_like::
 
             >>> @sized(10)
             >>> def gen(): ...
@@ -97,18 +127,26 @@ def sized(size: int | t.Callable[[dict[str | int]], int]):
         | def gen(data: list): ...
     """
 
-    def deco(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs) -> SizedGenerator:
-            # fn_dict is a union dict of kwargs with args added with index keys
-            fn_dict = kwargs.copy()
-            fn_dict.update(dict(enumerate(args)))
+    def decorator(
+        func: T_call,
+    ) -> t.Callable[..., SizedGenerator[T_yield, T_send, T_return]]:
+        """Decorator"""
 
-            return SizedGenerator(
-                func(*args, **kwargs),
-                length=size
-            )
+        @wraps(func)
+        def wrapper(*args: t.Any, **kwargs: t.Any) -> SizedGenerator:
+            """Wrapper"""
+            if isinstance(size, (int, t.Sized)):
+                resolved = _get_size(size)
+            elif callable(size):
+                # fn_dict is a union dict of kwargs with args added with index keys
+                fn_dict = kwargs.copy()
+                fn_dict.update(dict(*enumerate(args)))
+                resolved = _size_call(size, fn_dict)
+            else:
+                raise TypeError(f"Expected int or Callable, got {type(size)}")
+
+            return SizedGenerator(func(*args, **kwargs), size_like=resolved)
 
         return wrapper
 
-    return deco
+    return decorator
