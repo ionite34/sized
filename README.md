@@ -1,17 +1,16 @@
-# nwave
-[![Build](https://github.com/ionite34/nwave/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/ionite34/nwave/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/ionite34/nwave/branch/main/graph/badge.svg?token=ZXM5Y46XBI)](https://codecov.io/gh/ionite34/nwave)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fionite34%2Fnwave.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fionite34%2Fnwave?ref=badge_shield)
+# sized
 
+[![Build](https://github.com/ionite34/sized/actions/workflows/build.yml/badge.svg)](https://github.com/ionite34/sized/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/ionite34/sized/branch/main/graph/badge.svg)](https://codecov.io/gh/ionite34/sized)
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nwave)
-[![PyPI version](https://badge.fury.io/py/nwave.svg)](https://pypi.org/project/nwave/)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/ionite34/sized/main.svg)](https://results.pre-commit.ci/latest/github/ionite34/sized/main)
 
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sized)](https://pypi.org/project/sized/)
+[![PyPI version](https://badge.fury.io/py/sized.svg)](https://pypi.org/project/sized/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
-Low latency multi-thread audio transforms and conversions
-
+## Getting started
+### WIP
 
 ## License
 The code in this project is released under the [MIT License](LICENSE).
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fionite34%2Fnwave.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fionite34%2Fnwave?ref=badge_large)
