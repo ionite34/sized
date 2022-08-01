@@ -11,10 +11,10 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     env:
-      OS: ubuntu-latest
-      POETRY-CACHE: ~/.cache/pypoetry
-      PYTHON: '3.10'
-      POETRY: '1.1.13'
+      os: ubuntu-latest
+      poetry-cache: ~/.cache/pypoetry
+      python: '3.10'
+      poetry: '1.1.13'
 
     steps:
     - name: Wait for tests to succeed
@@ -33,17 +33,17 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache/pypoetry
-        key: poetry-cache-${{ env.OS }}-${{ env.POETRY-CACHE }}-${{ env.PYTHON }}-${{ env.POETRY }}
+        key: poetry-cache-${{ env.os }}-${{ env.poetry-cache }}-${{ env.python }}-${{ env.poetry }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('.github/workflows/publish.yml') }}
 
     - name: Setup Python
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ env.PYTHON }}
+        python-version: ${{ env.python }}
 
     - name: Run Poetry image
       uses: abatilo/actions-poetry@v2.0.0
       with:
-        poetry-version: ${{ env.POETRY }}
+        poetry-version: ${{ env.poetry }}
 
     - name: Install requirements
       run: |

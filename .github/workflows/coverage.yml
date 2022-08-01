@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache/pypoetry
-        key: poetry-cache-${{ matrix.os }}-${{ matrix.poetry-cache }}-${{ matrix.python-version }}-${{ matrix.poetry-version }}
+        key: poetry-cache-${{ matrix.os }}-${{ matrix.poetry-cache }}-${{ matrix.python-version }}-${{ matrix.poetry-version }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('.github/workflows/coverage.yml') }}
 
     - name: Setup Python
       uses: actions/setup-python@v3
@@ -47,7 +47,6 @@ jobs:
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3.1.0
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
         flags: unittests
         verbose: true
