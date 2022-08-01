@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "sized"
 version = "0.1.0"
-description = "Decorate Generators to be Sized and Indexable"
+description = "Sized Generators with Decorators"
 authors = ["ionite34 <dev@ionite.io>"]
 
 license = "MIT"
