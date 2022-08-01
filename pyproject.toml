@@ -11,7 +11,7 @@ repository = "https://github.com/ionite34/sized"
 keywords = ["generator", "iterator", "iter", "sizedgenerator"]
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.12"
+python = ">=3.7.2, <3.12"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
