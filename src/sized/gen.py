@@ -38,7 +38,7 @@ class SizedGenerator(Generator[T_yield, T_send, T_return]):
 
         Args:
             gen: Base Generator
-            size_like: Length of iterator as int, or Sized object that implements __len__
+            size_like: Length of iterator as int | Sized
         """
         super().__init__()
         if not isinstance(gen, Generator):
