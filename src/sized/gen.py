@@ -12,7 +12,8 @@ T_return = t.TypeVar("T_return")
 T_call = t.TypeVar("T_call", bound=t.Callable[..., Generator])
 
 SizeLike = t.Union[int, t.Sized]
-SizedCallable = t.Callable[[dict[t.Union[str], t.Any]], SizeLike]
+ArgDict = t.Dict[str, t.Any]
+SizedCallable = t.Callable[[ArgDict], SizeLike]
 SupportsSize = t.Union[SizeLike, SizedCallable]
 
 
@@ -25,7 +26,7 @@ def _get_size(size: SizeLike) -> int:
     raise TypeError(f"{size} should be int or Sized, not {type(size)}")
 
 
-def _size_call(func: SizedCallable, fn_dict: dict[str, t.Any]) -> int:
+def _size_call(func: SizedCallable, fn_dict: ArgDict) -> int:
     """Get int size from SizedCallable"""
     size_like = func(fn_dict)
     return _get_size(size_like)
