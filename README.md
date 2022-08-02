@@ -95,6 +95,7 @@ gen = SizedGenerator((x ** 2 for x in range(10)), 10)
 
 - The `size` argument can be either an `int`, `Sized` object, or a callable accepting a dictionary of
 arguments and keyword-arguments, returning an `int` or `Sized` object.
+- Using a lambda, you can define the size dynamically using any argument passed to the generator function.
 
 ```python
 @sized(15) # int
@@ -111,7 +112,7 @@ def gen():
         yield i ** 2
 ```
 ```python
-@sized(lambda x: x['some_arg']) # Callable using keyword argument, returning `Sized`
+@sized(lambda x: x['arg']) # Callable using keyword argument, returning `Sized`
 def gen(arg = None):
     for i in arg:
         yield i ** 2
