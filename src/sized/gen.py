@@ -33,6 +33,8 @@ def _size_call(func: SizedCallable, fn_dict: ArgDict) -> int:
 
 
 class SizedGenerator(Generator[T_yield, T_send, T_return]):
+    """Extended Generator with __len__"""
+
     def __init__(self, gen: Generator[T_yield, T_send, T_return], size_like: SizeLike):
         """
         Generator with fixed size.
