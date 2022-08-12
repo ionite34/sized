@@ -108,7 +108,7 @@ class SizedGenerator(Generator[T_yield, T_send, T_return]):
         __tb: TracebackType | None = ...,
     ) -> T_yield:
         """Raise an exception in the generator."""
-        ...
+        ...  # pragma: no cover
 
     @overload
     def throw(
@@ -118,7 +118,7 @@ class SizedGenerator(Generator[T_yield, T_send, T_return]):
         __tb: TracebackType | None = ...,
     ) -> T_yield:
         """Raise an exception in the generator."""
-        ...
+        ...  # pragma: no cover
 
     def throw(
         self,

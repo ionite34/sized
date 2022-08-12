@@ -91,11 +91,29 @@ def test_decorator_ex() -> None:
     # Check invalid decorator use
     with pytest.raises(TypeError):
 
-        @sized(5)
-        def _make_gen(n: int):
+        @sized(5)  # type: ignore
+        def _make_gen(n: int) -> int:  # type: ignore
             return 1 + n
 
         _make_gen(2)
+
+    # Invalid (not in int | Sized | Callable)
+    with pytest.raises(TypeError):
+
+        @sized(None)  # type: ignore
+        def _make_gen(n: int) -> Generator[int, None, None]:
+            yield n
+
+        _make_gen(5)
+
+    # Missing positional argument
+    with pytest.raises(TypeError):
+
+        @sized(lambda x: x["0"])  # type: ignore
+        def _make_gen(n: int) -> Generator[int, None, None]:
+            yield n
+
+        _make_gen()  # type: ignore
 
 
 def test_sized_gen() -> None:
