@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sized"
-version = "0.1.0"
+version = "0.1.1"
 description = "Sized Generators with Decorators"
 authors = ["ionite34 <dev@ionite.io>"]
 
