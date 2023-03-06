@@ -21,7 +21,7 @@ pylint = "^2.15.3"
 black = "^22.6.0"
 tox = "^3.25.1"
 pre-commit = "^2.20.0"
-tqdm = "^4.64.0"
+tqdm = "^4.65.0"
 
 [tool.pylint.messages_control]
 max-line-length = 88
